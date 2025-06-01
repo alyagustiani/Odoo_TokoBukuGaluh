@@ -1,0 +1,21 @@
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_product_internal_ref_book" model="ir.sequence">
+            <field name="name">Product Internal Reference - Book</field>
+            <field name="code">product.internal.ref.book</field>
+            <field name="prefix">Book</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+        </record>
+
+        <record id="seq_product_internal_ref_overseas" model="ir.sequence">
+            <field name="name">Product Internal Reference - Overseas</field>
+            <field name="code">product.internal.ref.overseas</field>
+            <field name="prefix">Over</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+        </record>
+
+    </data>
+</odoo>
