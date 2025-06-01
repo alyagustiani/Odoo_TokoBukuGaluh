@@ -727,4 +727,15 @@ action = {
         </field>
     </record>
 
+    <record id="product_product_form_view_inherit_bookshelf" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.bookshelf</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='codes']" position="inside">
+                <field name="bookshelf_id"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

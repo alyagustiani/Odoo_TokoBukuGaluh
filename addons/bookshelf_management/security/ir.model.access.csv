@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bookshelf_bookshelf_user,bookshelf.bookshelf.user,model_bookshelf_bookshelf,base.group_user,1,1,1,1
+access_bookshelf_category_user,bookshelf.category.user,model_bookshelf_category,base.group_user,1,1,1,1

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View untuk Rak Buku -->
+    <record id="view_bookshelf_list" model="ir.ui.view">
+        <field name="name">bookshelf.bookshelf.list</field>
+        <field name="model">bookshelf.bookshelf</field>
+        <field name="arch" type="xml">
+            <list string="Rak Buku" decoration-danger="is_full" decoration-warning="available_space &lt; 10">
+                <field name="name"/>
+                <field name="location"/>
+                <field name="category_id"/>
+                <field name="current_books"/>
+                <field name="capacity"/>
+                <field name="available_space"/>
+                <field name="is_full" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View untuk Rak Buku -->
+    <record id="view_bookshelf_form" model="ir.ui.view">
+        <field name="name">bookshelf.bookshelf.form</field>
+        <field name="model">bookshelf.bookshelf</field>
+        <field name="arch" type="xml">
+            <form string="Rak Buku">
+                <header>
+                    <button name="toggle_active" type="object" 
+                            string="Arsipkan" class="oe_button oe_button--secondary"
+                            invisible="active == False"/>
+                    <button name="toggle_active" type="object" 
+                            string="Aktifkan" class="oe_button oe_button--primary"
+                            invisible="active == True"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-book">
+                            <field string="Buku" name="current_books" widget="statinfo"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Nama Rak..."/></h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="location"/>
+                            <field name="category_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="capacity"/>
+                            <field name="current_books"/>
+                            <field name="available_space"/>
+                            <field name="is_full"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Deskripsi">
+                            <field name="description" placeholder="Deskripsi rak buku..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View untuk Rak Buku -->
+    <record id="view_bookshelf_kanban" model="ir.ui.view">
+        <field name="name">bookshelf.bookshelf.kanban</field>
+        <field name="model">bookshelf.bookshelf</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="category_id" class="o_kanban_small_column">
+                <field name="color"/>
+                <field name="name"/>
+                <field name="location"/>
+                <field name="current_books"/>
+                <field name="capacity"/>
+                <field name="is_full"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+                            <div class="o_dropdown_kanban dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-bs-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                    <a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                    <div class="dropdown-divider"/>
+                                    <div class="dropdown-item-text text-muted">ID: <field name="id"/></div>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                        <br/>
+                                        <small class="o_kanban_record_subtitle text-muted">
+                                            <i class="fa fa-map-marker"/> <field name="location"/>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span class="fa fa-book"/> <field name="current_books"/>/<field name="capacity"/>
+                                        </div>
+                                        <div class="col-6">
+                                            <span t-if="record.is_full.raw_value" class="badge bg-danger">Penuh</span>
+                                            <span t-else="" class="badge bg-success">Tersedia</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View untuk Rak Buku -->
+    <record id="view_bookshelf_search" model="ir.ui.view">
+        <field name="name">bookshelf.bookshelf.search</field>
+        <field name="model">bookshelf.bookshelf</field>
+        <field name="arch" type="xml">
+            <search string="Cari Rak Buku">
+                <field name="name" string="Nama/Lokasi/Deskripsi" 
+                       filter_domain="['|', '|', ('name', 'ilike', self), ('location', 'ilike', self), ('description', 'ilike', self)]"/>
+                <field name="location"/>
+                <field name="category_id"/>
+                
+                <filter string="Rak Aktif" name="active_bookshelf" domain="[('active', '=', True)]"/>
+                <filter string="Rak Penuh" name="full_bookshelf" domain="[('is_full', '=', True)]"/>
+                <filter string="Rak Tersedia" name="available_bookshelf" domain="[('is_full', '=', False)]"/>
+                
+                <separator/>
+                <filter string="Ruang Hampir Habis" name="almost_full" 
+                        domain="[('available_space', '&lt;', 10), ('is_full', '=', False)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Kategori" name="group_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Lokasi" name="group_location" context="{'group_by': 'location'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'is_full'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bookshelf" model="ir.actions.act_window">
+        <field name="name">Rak Buku</field>
+        <field name="res_model">bookshelf.bookshelf</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_active_bookshelf': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Buat rak buku pertama Anda!
+            </p>
+            <p>
+                Kelola rak-rak buku di toko Anda dengan mudah.
+                Anda dapat menambah, mengedit, dan melacak kapasitas setiap rak.
+            </p>
+        </field>
+    </record>
+
+    <!-- Views untuk Kategori Rak -->
+    <record id="view_bookshelf_category_list" model="ir.ui.view">
+        <field name="name">bookshelf.category.list</field>
+        <field name="model">bookshelf.category</field>
+        <field name="arch" type="xml">
+            <list string="Kategori Rak">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="bookshelf_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bookshelf_category_form" model="ir.ui.view">
+        <field name="name">bookshelf.category.form</field>
+        <field name="model">bookshelf.category</field>
+        <field name="arch" type="xml">
+            <form string="Kategori Rak">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-bookmark">
+                            <field string="Rak" name="bookshelf_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                    </group>
+                    
+                    <field name="description" placeholder="Deskripsi kategori..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bookshelf_category" model="ir.actions.act_window">
+        <field name="name">Kategori Rak</field>
+        <field name="res_model">bookshelf.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_bookshelf_root" 
+              name="Rak Buku" 
+              sequence="10"/>
+    
+    <menuitem id="menu_bookshelf_management" 
+              name="Manajemen Rak" 
+              parent="menu_bookshelf_root" 
+              sequence="10"/>
+    
+    <menuitem id="menu_bookshelf" 
+              name="Rak Buku" 
+              parent="menu_bookshelf_management" 
+              action="action_bookshelf" 
+              sequence="10"/>
+    
+    <menuitem id="menu_bookshelf_category" 
+              name="Kategori Rak" 
+              parent="menu_bookshelf_management" 
+              action="action_bookshelf_category" 
+              sequence="20"/>
+</odoo>

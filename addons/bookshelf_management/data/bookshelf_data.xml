@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Kategori Rak Default -->
+        <record id="category_fiction" model="bookshelf.category">
+            <field name="name">Fiksi</field>
+            <field name="code">FIC</field>
+            <field name="description">Rak untuk buku-buku fiksi</field>
+        </record>
+        
+        <record id="category_non_fiction" model="bookshelf.category">
+            <field name="name">Non-Fiksi</field>
+            <field name="code">NF</field>
+            <field name="description">Rak untuk buku-buku non-fiksi</field>
+        </record>
+        
+        <record id="category_education" model="bookshelf.category">
+            <field name="name">Pendidikan</field>
+            <field name="code">EDU</field>
+            <field name="description">Rak untuk buku-buku pendidikan</field>
+        </record>
+        
+        <!-- Rak Buku Default -->
+        <record id="bookshelf_001" model="bookshelf.bookshelf">
+            <field name="name">RAK-001</field>
+            <field name="location">Lantai 1 - Depan</field>
+            <field name="category_id" ref="category_fiction"/>
+            <field name="capacity">150</field>
+            <field name="current_books">45</field>
+            <field name="description">Rak utama untuk koleksi novel dan cerita fiksi</field>
+        </record>
+        
+        <record id="bookshelf_002" model="bookshelf.bookshelf">
+            <field name="name">RAK-002</field>
+            <field name="location">Lantai 1 - Tengah</field>
+            <field name="category_id" ref="category_non_fiction"/>
+            <field name="capacity">100</field>
+            <field name="current_books">30</field>
+            <field name="description">Rak untuk buku-buku biografi dan sejarah</field>
+        </record>
+    </data>
+</odoo>
